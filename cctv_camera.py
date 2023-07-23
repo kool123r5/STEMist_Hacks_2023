@@ -8,8 +8,8 @@ toPhoneNumber = '+916366060912'
 
 def handleCallButtonPress():
     twilioAPIBaseUrl = 'https://api.twilio.com/2010-04-01'
-    accountSid = 'ACc00dd309196ccc63c81655e4fef9c573'
-    authToken = '5c5a829c20de074f5cb0d07303422559'
+    accountSid = yourAccSid #hidden for privacy
+    authToken = yourAuthToken #hidden for privacy 
     twilioPhoneNumberFormatted = requests.utils.quote(twilioPhoneNumber)
     toPhoneNumberFormatted = requests.utils.quote(toPhoneNumber)
     callUrl = f'{twilioAPIBaseUrl}/Accounts/{accountSid}/Calls.json'
