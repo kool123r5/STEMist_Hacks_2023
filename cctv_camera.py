@@ -8,8 +8,8 @@ toPhoneNumber = '+916366060912'
 
 def handleCallButtonPress():
     twilioAPIBaseUrl = 'https://api.twilio.com/2010-04-01'
-    accountSid = yourAccSid #hidden for privacy
-    authToken = yourAuthToken #hidden for privacy 
+    accountSid = 'ACc00dd309196ccc63c81655e4fef9c573'
+    authToken = '56b94eb886ffca3fcdad3eb0a2d9f217'
     twilioPhoneNumberFormatted = requests.utils.quote(twilioPhoneNumber)
     toPhoneNumberFormatted = requests.utils.quote(toPhoneNumber)
     callUrl = f'{twilioAPIBaseUrl}/Accounts/{accountSid}/Calls.json'
@@ -37,7 +37,7 @@ classes = ["Weapon"]
 
 #gun 1: ./assets/gun-1.mp4
 #gun 2: ./assets/gun-2.mp4
-#no gun: ./assets/no_gun.mp4
+#gun doesnt work: ./assets/no_gun.mp4
 cap = cv2.VideoCapture("./assets/gun-2.mp4")
 
 while True:
@@ -67,11 +67,8 @@ while True:
                     center_y = int(detection[1] * height)
                     w = int(detection[2] * width)
                     h = int(detection[3] * height)
-
-                    
                     x = int(center_x - w / 2)
                     y = int(center_y - h / 2)
-
                     boxes.append([x, y, w, h])
                     accs.append(float(confidence))
                     class_ids.append(class_id)

@@ -5,9 +5,11 @@ import os
 import base64
 import requests
 import pyrebase
+from model import tensor
 
 twilioPhoneNumber = '+12179088838'
 toPhoneNumber = '+916366060912'
+
 
 
 firebaseConfig = {
@@ -25,31 +27,20 @@ database = firebase.database()
 
 def main(file_path):
     sample_rate, signal = wavfile.read(file_path)
-
-    
     if len(signal.shape) > 1:
         signal = signal[:, 0]
-
-    
     fft_result = np.fft.rfft(signal)
     magnitudes = np.abs(fft_result)
-
-    
     num_samples = len(signal)
-    
     frequency_axis = np.fft.rfftfreq(num_samples, d=1.0 / sample_rate)
-  
-
-    
     max_magnitude_index = np.argmax(magnitudes)
     max_magnitude_frequency = frequency_axis[max_magnitude_index]
-
     return max_magnitude_frequency
 
 def handleCallButtonPress():
     twilioAPIBaseUrl = 'https://api.twilio.com/2010-04-01'
-    accountSid = yourAccSid #hidden for privacy
-    authToken = yourAuthToken #hidden for privacy 
+    accountSid = 'ACc00dd309196ccc63c81655e4fef9c573'
+    authToken = '56b94eb886ffca3fcdad3eb0a2d9f217'
     twilioPhoneNumberFormatted = requests.utils.quote(twilioPhoneNumber)
     toPhoneNumberFormatted = requests.utils.quote(toPhoneNumber)
     callUrl = f'{twilioAPIBaseUrl}/Accounts/{accountSid}/Calls.json'
@@ -120,25 +111,25 @@ ranges_dict = {
     "Machine Gun" : [0, 200],
 }
 
-'''
-paths
-C:\\Users\\ashwi\\OneDrive\\Documents\\hackathon prep\\hackathon\\assets\\gunshot_audio_2\\AK-12\\3 (1).wav
+#doesnt work: "C:\\Users\\ashwi\\OneDrive\\Documents\\hackathon prep\\hackathon\\ac.wav"
+#doesnt work: "C:\\Users\\ashwi\\OneDrive\\Documents\\hackathon prep\\hackathon\\bird.wav"
+#work: "C:\\Users\\ashwi\\OneDrive\\Documents\\hackathon prep\\hackathon\\assets\\gunshot_audio_2\\AK-12\\3 (1).wav"
+#work: "C:\\Users\\ashwi\\OneDrive\\Documents\\hackathon prep\\hackathon\\assets\\gunshot_audio_2\\M4\\4 (1).wav"
+audio_file = "C:\\Users\\ashwi\\OneDrive\\Documents\\hackathon prep\\hackathon\\assets\\gunshot_audio_2\\M4\\4 (1).wav"
+if(tensor(audio_file)):
+    x = main(audio_file)
+    handleCallButtonPress()
+    gun_type = None
+    for i in ranges_dict:
+        lower, higher = ranges_dict[i]
+        if(x >= lower and x <= higher):
+            gun_type = i
 
-'''
-audio_file = "C:\\Users\\ashwi\\OneDrive\\Documents\\hackathon prep\\hackathon\\assets\\gunshot_audio_2\\AK-12\\3 (1).wav"
-x = main(audio_file)
-handleCallButtonPress()
+    user = '12184295106498076'
+    gunshot_location = database.child('locations').child(user).child('location').get().val()
+    data = {
+        'location' : gunshot_location,
+        'gunType' : gun_type
+    }
 
-for i in ranges_dict:
-    lower, higher = ranges_dict[i]
-    if(x >= lower and x <= higher):
-        gun_type = i
-
-gunshot_location = database.child('locations').child('5036709156539269').child('location').get().val()
-
-data = {
-    'location' : gunshot_location,
-    'gun type' : gun_type
-}
-
-gunshot = database.child("Gunshot").set(data)
+    gunshot = database.child("Gunshot").set(data)
